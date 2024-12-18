@@ -20,7 +20,7 @@ let childComponent (age: int) (dispatch : Cmd -> unit ) =
 
     Html.div
         [
-            Html.h1 "Child Component with local store"
+            Html.h2 "Child Component with local store"
             Bind.el(childStore |> Store.map (fun x -> x), fun a -> Html.div (sprintf "Child Age: %i" a))
             Html.div [
                 Html.button [
@@ -65,7 +65,7 @@ module ChIldComponentWithLocalElmish =
 
         Html.div
             [
-                Html.h1 "Child Component with Local Elmish Loop"
+                Html.h2 "Child Component with Local Elmish Loop"
                 Bind.el(childStore |> Store.map (fun x -> x), fun a -> Html.div (sprintf "Child Age: %i" a.Age))
                 Html.div [
                     Html.button [
@@ -104,6 +104,23 @@ let app() =
         Bind.el(state |> Store.map (fun x -> x.Age), fun a -> Html.div (sprintf "Parent Age: %i" a))
         childComponent state.Value.Age dispatch
         ChIldComponentWithLocalElmish.childComponentWithLocalElmish state.Value.Age dispatch
+
+        Html.div
+            [
+                Html.h1 "Child component bound to parent state"
+                
+                Html.button [
+                        Html.text "Update parent Age"
+                        Ev.onClick (fun _ -> 
+                            dispatch (UpdateAge (state.Value.Age + 1))
+                            )
+                        
+                    ]
+                Bind.el(state |> Store.map (fun x -> x.Age), fun a -> childComponent a dispatch)
+            ]
+
+
+
     ]
     |> fragment
 
